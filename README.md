@@ -17,5 +17,10 @@ Situs statis + 1 serverless function. Tanpa build step.
 - Jumlah pendaftar di web diisi manual lewat `preRegCount` di `config.js` (belum ada database).
   Kalau mau otomatis, buat `/api/stats` yang mengembalikan `{ "count": N }` dari database (mis. Vercel KV / Supabase); `script.js` sudah memanggilnya.
 - Pre-register ini mengumpulkan username Roblox + email opsional. Jangan pernah minta password.
-"# distrik" 
-"# distrik" 
+
+## Tampilan grunge (bercak cat)
+- `paint.js` menebar bercak cat, tetesan, lakban, dan tulisan semprot dari atas sampai bawah halaman.
+  Semuanya ikut halaman (tidak fixed) dan bergeser dengan kecepatan berbeda saat di-scroll.
+- Aset ada di `assets/paint/` (webp, ringan untuk HP). Tekstur dinding beton ada di `grain.webp`, `stain.webp`, `scratch.webp`.
+- Ganti kata-kata grafiti di `paint.js` (`TAGS`). Bagian gelap (`#daftar`, `#update`, `#faq`) berbentuk kertas sobek; tetesan di tepi atas tiap section diatur di `styles.css` (`--drip`).
+- Pengguna yang mengaktifkan "reduce motion" mendapat versi tanpa animasi.
