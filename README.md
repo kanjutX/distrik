@@ -18,3 +18,4 @@ Situs statis + 1 serverless function. Tanpa build step.
   Kalau mau otomatis, buat `/api/stats` yang mengembalikan `{ "count": N }` dari database (mis. Vercel KV / Supabase); `script.js` sudah memanggilnya.
 - Pre-register ini mengumpulkan username Roblox + email opsional. Jangan pernah minta password.
 "# distrik" 
+"# distrik" 
