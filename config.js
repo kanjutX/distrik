@@ -7,7 +7,8 @@ window.D17 = {
   youtubeUrl: "https://www.youtube.com/@GANTI",
   email: "support@GANTI-DOMAIN.com",
   // Tanggal rilis beta (waktu Jakarta). Kosongkan "" kalau belum ada tanggal.
-  launchDate: "2026-12-20T19:00:00+07:00",
+  // 2026-12-20T19:00:00+07:00
+  launchDate: "",
   // Jumlah pre-register saat ini (update manual, atau sambungkan ke /api/stats nanti)
   preRegCount: 0,
   milestones: [
