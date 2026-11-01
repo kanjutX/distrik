@@ -1,0 +1,13 @@
+{
+  "name": "distrik17-web",
+  "version": "3.2.0",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "scripts": { "dev": "vercel dev" },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "@vercel/blob": "^2.8.2",
+    "google-auth-library": "^11.3.2",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
