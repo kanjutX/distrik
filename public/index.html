@@ -23,6 +23,10 @@
 
 <!-- rough-edge filter for spray-painted tags -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="spray" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></svg>
+
+<!-- ambient atmospheric canvas (rain, street embers, spotlight) -->
+<canvas class="fx-canvas" id="fxCanvas" aria-hidden="true"></canvas>
+
 <!-- paint layers: filled by paint.js, they live in the page so they scroll with it -->
 <div class="paint paint--back" id="paintBack" aria-hidden="true"></div>
 <div class="paint paint--front" id="paintFront" aria-hidden="true"></div>
@@ -30,12 +34,14 @@
 <div class="notice" id="notice" role="status" hidden></div>
 
 <header class="nav" id="top">
+  <div class="nav__progress" id="scrollProgress" aria-hidden="true"></div>
   <a class="nav__brand" href="#top" aria-label="Distrik 17">DISTRIK <b>17</b></a>
   <nav class="nav__links" id="navLinks">
     <a href="#tentang">Tentang</a>
     <a href="#hadiah">Hadiah</a>
     <a href="#update">Update</a>
     <a href="/forum">Forum</a>
+    <a href="/member">Warga</a>
     <a href="#roadmap">Roadmap</a>
     <a href="#faq">FAQ</a>
     <a href="#support">Support</a>
@@ -46,15 +52,21 @@
 </header>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero__bg"></div>
+<section class="hero" id="heroSec">
+  <div class="hero__bg" id="heroBg"></div>
+  <div class="hero__vignette" aria-hidden="true"></div>
   <div class="tape tape--a"></div><div class="tape tape--b"></div>
-  <div class="hero__inner">
-    <p class="sticker">PRE-REGISTER • BETA TERBATAS</p>
-    <img class="hero__logo" src="/assets/logo.png" alt="Distrik 17" width="1400" height="558">
+  <div class="hero__inner" id="heroStage">
+    <div class="hero__kicker">
+      <p class="sticker">PRE-REGISTER • BETA TERBATAS</p>
+      <span class="hero__badge">ROBLOX STREET INDONESIA</span>
+    </div>
+    <div class="hero__logo-wrap" id="heroLogoWrap">
+      <img class="hero__logo" src="/assets/logo.png" alt="Distrik 17" width="1400" height="558">
+    </div>
     <p class="hero__tag">Kota menyembunyikan ceritamu. <span>Mulai dari gang paling sempit.</span></p>
     <div class="hero__cta">
-      <a class="btn" href="#daftar">Pre-register sekarang <i>→</i></a>
+      <a class="btn btn--glow" href="#daftar">Pre-register sekarang <i>→</i></a>
       <a class="btn btn--ghost" href="#tentang">Lihat isinya</a>
     </div>
     <div class="countdown" id="countdown" hidden>
@@ -65,13 +77,17 @@
     </div>
     <p class="hero__note" id="cdNote">Tanggal rilis segera diumumkan — daftar supaya kamu tahu duluan.</p>
   </div>
+  <a class="hero__scroll" href="#tentang" aria-label="Gulir ke Tentang">
+    <span>JELAJAHI KOTA</span>
+    <i>↓</i>
+  </a>
 </section>
 
 <!-- MARQUEE -->
 <div class="marquee" aria-hidden="true">
-  <div class="marquee__track">
-    <span>JADI WARGA AWAL</span><span>•</span><span>BUAT IDENTITASMU</span><span>•</span><span>GACHA IDENTITAS</span><span>•</span><span>KOTA INDONESIA</span><span>•</span>
-    <span>JADI WARGA AWAL</span><span>•</span><span>BUAT IDENTITASMU</span><span>•</span><span>GACHA IDENTITAS</span><span>•</span><span>KOTA INDONESIA</span><span>•</span>
+  <div class="marquee__track" id="marqueeTrack">
+    <span>JADI WARGA AWAL</span><span>•</span><span>BUAT IDENTITASMU</span><span>•</span><span>GACHA IDENTITAS</span><span>•</span><span>KOTA INDONESIA</span><span>•</span><span>COMBAT JALANAN</span><span>•</span>
+    <span>JADI WARGA AWAL</span><span>•</span><span>BUAT IDENTITASMU</span><span>•</span><span>GACHA IDENTITAS</span><span>•</span><span>KOTA INDONESIA</span><span>•</span><span>COMBAT JALANAN</span><span>•</span>
   </div>
 </div>
 
@@ -83,36 +99,93 @@
     <p class="lead">Distrik 17 adalah game Roblox bertema street Indonesia. Kamu mulai sebagai warga tanpa nama, lalu membentuk identitasmu sendiri: suku, nama, gaya rambut, seragam, sampai aksesori. Selebihnya, kota yang menentukan.</p>
 
     <div class="grid grid--3">
-      <article class="card">
-        <div class="card__ico">01</div>
+      <article class="card" data-tilt>
+        <div class="card__top">
+          <div class="card__ico">01</div>
+          <span class="card__meta">14 KATEGORI</span>
+        </div>
         <h3>Identitas Unik</h3>
         <p>14 kategori kustomisasi: asal suku, nama, rambut, baju, celana, aksesori. Tidak ada dua warga yang persis sama.</p>
       </article>
-      <article class="card">
-        <div class="card__ico">02</div>
+      <article class="card" data-tilt>
+        <div class="card__top">
+          <div class="card__ico">02</div>
+          <span class="card__meta">TRANSPARAN</span>
+        </div>
         <h3>Reroll &amp; Gacha</h3>
         <p>Putar peluang untuk dapat item langka. Peluang ditampilkan terbuka di dalam game, tanpa tebak-tebakan.</p>
       </article>
-      <article class="card">
-        <div class="card__ico">03</div>
+      <article class="card" data-tilt>
+        <div class="card__top">
+          <div class="card__ico">03</div>
+          <span class="card__meta">MELEE &amp; PARRY</span>
+        </div>
         <h3>Combat Jalanan</h3>
         <p>Pukul, tendang, parry, dan counter. Kontrol yang nyaman untuk PC maupun HP.</p>
       </article>
-      <article class="card">
-        <div class="card__ico">04</div>
+      <article class="card" data-tilt>
+        <div class="card__top">
+          <div class="card__ico">04</div>
+          <span class="card__meta">ATMOSFER LOKAL</span>
+        </div>
         <h3>Suasana Kota</h3>
         <p>Hujan, gang, tembok mural, dan suasana yang terasa dekat. Dibangun dengan rasa lokal, bukan template.</p>
       </article>
-      <article class="card">
-        <div class="card__ico">05</div>
+      <article class="card" data-tilt>
+        <div class="card__top">
+          <div class="card__ico">05</div>
+          <span class="card__meta">CROSS-PLATFORM</span>
+        </div>
         <h3>Main di Mana Saja</h3>
         <p>PC, HP, dan tablet. Antarmuka menyesuaikan layar supaya tombol tetap enak ditekan.</p>
       </article>
-      <article class="card card--red">
-        <div class="card__ico">17</div>
+      <article class="card card--red" data-tilt>
+        <div class="card__top">
+          <div class="card__ico">17</div>
+          <span class="card__meta">KOMUNITAS</span>
+        </div>
         <h3>Bangun Bareng Komunitas</h3>
         <p>Masukan warga menentukan apa yang kami garap berikutnya. Beta ini memang untuk didengar.</p>
       </article>
+    </div>
+
+    <!-- INTERACTIVE IDENTITY & GACHA SIMULATOR PREVIEW -->
+    <div class="idpreview rv" id="idPreview">
+      <div class="idpreview__info">
+        <p class="sticker">SIMULASI IDENTITAS</p>
+        <h3>Coba Gacha <em>Warga Awal.</em></h3>
+        <p>Setiap warga memulai perjalanan di Distrik 17 dengan identitas acak yang bisa di-reroll. Coba putar pratinjau kartu identitas warga di samping, lalu daftar untuk klaim <b>30 reroll title gratis</b> di profilmu.</p>
+        <div class="idpreview__odds">
+          <span>Peluang Title:</span>
+          <b>Common 70%</b>
+          <i>•</i>
+          <b class="is-rare">Rare 25%</b>
+          <i>•</i>
+          <b class="is-epic">Epik 5%</b>
+        </div>
+        <div class="idpreview__actions">
+          <button type="button" class="btn btn--sm" id="simRollBtn">Acak Identitas <i>↻</i></button>
+          <a class="btn btn--sm btn--ghost" href="#daftar">Klaim 30 Reroll Asli</a>
+        </div>
+      </div>
+      <div class="idcard" id="simCard" data-tilt>
+        <div class="idcard__head">
+          <span class="idcard__stamp">KARTU WARGA • DISTRIK 17</span>
+          <span class="idcard__serial" id="simSerial">NO. D17-0017</span>
+        </div>
+        <div class="idcard__body">
+          <div class="idcard__rows">
+            <div class="idcard__row"><span>NAMA JALANAN</span><b id="simName">Bima Saputra</b></div>
+            <div class="idcard__row"><span>ASAL &amp; MARGA</span><b id="simClan">Sunda • Blok Selatan</b></div>
+            <div class="idcard__row"><span>PENAMPILAN</span><b id="simLook">Jaket Sukajan • Rambut Belah Tengah</b></div>
+            <div class="idcard__row"><span>GAYA TARUNG</span><b id="simStyle">Brawler Lorong Sempit</b></div>
+          </div>
+          <div class="idcard__titlebox">
+            <span>GELAR AKTIF</span>
+            <div id="simTitle"><span class="badge-title tier-epic">Warga Awal</span></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -124,7 +197,7 @@
     <h2>Pre-register <em>gratis.</em></h2>
     <p class="lead">Masuk dengan akun Google, itu saja. Kamu langsung terdaftar, dapat 30 reroll title gratis, dan kami kabari saat beta dibuka.</p>
 
-    <div class="counter">
+    <div class="counter" data-tilt>
       <div class="counter__top"><b id="regCount">0</b><span>warga sudah terdaftar</span></div>
       <div class="bar"><i id="regBar"></i></div>
       <p class="counter__next" id="regNext"></p>
@@ -136,7 +209,7 @@
         <li><b>2</b><span>Isi username Roblox di profilmu</span></li>
         <li><b>3</b><span>Putar title dan tunggu hari rilis</span></li>
       </ol>
-      <a class="btn btn--block" id="joinBtn" href="/api/auth/login?returnTo=/profile">Daftar dengan Google <i>→</i></a>
+      <a class="btn btn--block btn--glow" id="joinBtn" href="/api/auth/login?returnTo=/profile">Daftar dengan Google <i>→</i></a>
       <p class="joinbox__msg" id="joinMsg" role="status" aria-live="polite"></p>
       <p class="joinbox__fine">Kami hanya menyimpan nama, email, dan foto dari Google. Tidak pernah meminta password Roblox kamu.</p>
     </div>
@@ -170,10 +243,10 @@
     <p class="sticker">ROADMAP</p>
     <h2>Arah <em>perjalanan.</em></h2>
     <div class="road">
-      <div class="road__step is-done"><b>Fase 1</b><h3>Fondasi</h3><p>Identitas, reroll, antarmuka street, combat dasar.</p></div>
-      <div class="road__step is-now"><b>Fase 2 • Sekarang</b><h3>Beta Tertutup</h3><p>Pre-register, uji coba warga awal, perbaikan dari masukan.</p></div>
-      <div class="road__step"><b>Fase 3</b><h3>Beta Terbuka</h3><p>Pembukaan untuk semua pemain dan event pembuka.</p></div>
-      <div class="road__step"><b>Fase 4</b><h3>Rilis Penuh</h3><p>Peta tambahan, item baru, musim kompetitif.</p></div>
+      <div class="road__step is-done" data-tilt><b>Fase 1</b><h3>Fondasi</h3><p>Identitas, reroll, antarmuka street, combat dasar.</p></div>
+      <div class="road__step is-now" data-tilt><b>Fase 2 • Sekarang</b><h3>Beta Tertutup</h3><p>Pre-register, uji coba warga awal, perbaikan dari masukan.</p></div>
+      <div class="road__step" data-tilt><b>Fase 3</b><h3>Beta Terbuka</h3><p>Pembukaan untuk semua pemain dan event pembuka.</p></div>
+      <div class="road__step" data-tilt><b>Fase 4</b><h3>Rilis Penuh</h3><p>Peta tambahan, item baru, musim kompetitif.</p></div>
     </div>
     <p class="fine">Roadmap dapat berubah sesuai perkembangan dan masukan komunitas.</p>
   </div>
@@ -202,13 +275,13 @@
     <h2>Butuh <em>bantuan?</em></h2>
     <p class="lead">Tim kecil, tapi kami baca semua pesan. Pilih jalur yang paling nyaman.</p>
     <div class="grid grid--3">
-      <a class="card card--link" data-link="discordUrl" target="_blank" rel="noopener">
+      <a class="card card--link" data-link="discordUrl" data-tilt target="_blank" rel="noopener">
         <div class="card__ico">DC</div><h3>Discord</h3><p>Tanya jawab, laporan bug, dan info paling cepat dari tim.</p><span class="more">Gabung →</span>
       </a>
-      <a class="card card--link" data-link="email" target="_blank" rel="noopener">
+      <a class="card card--link" data-link="email" data-tilt target="_blank" rel="noopener">
         <div class="card__ico">@</div><h3>Email Support</h3><p>Untuk masalah akun, laporan serius, atau kerja sama.</p><span class="more" id="mailTxt">Kirim email →</span>
       </a>
-      <a class="card card--link" data-link="robloxUrl" target="_blank" rel="noopener">
+      <a class="card card--link" data-link="robloxUrl" data-tilt target="_blank" rel="noopener">
         <div class="card__ico">RB</div><h3>Halaman Roblox</h3><p>Favoritkan game supaya masuk daftar kamu saat beta dibuka.</p><span class="more">Buka →</span>
       </a>
     </div>

@@ -141,23 +141,44 @@
   }
 
   function wireReroll() {
+    var ROLL_PREVIEW = [
+      { text: "Anak Gang", tier: "common" },
+      { text: "Kepala Preman", tier: "rare" },
+      { text: "Warga Awal", tier: "epic" },
+      { text: "Raja Trotoar", tier: "rare" },
+      { text: "Penghuni Blok 17", tier: "common" },
+      { text: "Pendiri Distrik", tier: "epic" }
+    ];
     $("rerollBtn").addEventListener("click", function () {
       var btn = this, result = $("rollResult");
       btn.disabled = true; setMsg("rerollMsg", "", "");
-      result.innerHTML = '<span class="badge-title tier-common">Mengocok...</span>';
+      result.classList.add("is-spinning");
+      var spinIdx = 0;
+      var spinTimer = setInterval(function () {
+        var sample = ROLL_PREVIEW[spinIdx % ROLL_PREVIEW.length];
+        result.innerHTML = titleBadge(sample);
+        spinIdx++;
+      }, 75);
       apiCall("/api/titles/reroll", "POST").then(function (r) {
-        if (!r.ok) {
-          result.innerHTML = titleBadge(P.activeTitle);
-          setMsg("rerollMsg", "err", r.data.error || "Gagal reroll.");
-          btn.disabled = P.rerollsRemaining <= 0;
-          return;
-        }
-        var t = r.data.title;
-        P.rerollsRemaining = r.data.rerollsRemaining;
-        if (r.data.isNew) P.ownedTitles = [t].concat(P.ownedTitles || []);
-        result.innerHTML = titleBadge(t);
-        updateRerollUI(); renderTitleGrid(); // hasil putaran tetap tampil, tidak ada render ulang halaman
-        setMsg("rerollMsg", "ok", r.data.isNew ? "Title baru didapat! Klik di koleksi untuk memakainya." : "Dapat title yang sudah kamu punya.");
+        setTimeout(function () {
+          clearInterval(spinTimer);
+          result.classList.remove("is-spinning");
+          if (!r.ok) {
+            result.innerHTML = titleBadge(P.activeTitle);
+            setMsg("rerollMsg", "err", r.data.error || "Gagal reroll.");
+            btn.disabled = P.rerollsRemaining <= 0;
+            return;
+          }
+          var t = r.data.title;
+          P.rerollsRemaining = r.data.rerollsRemaining;
+          if (r.data.isNew) P.ownedTitles = [t].concat(P.ownedTitles || []);
+          result.innerHTML = titleBadge(t);
+          result.classList.remove("is-landed");
+          void result.offsetWidth;
+          result.classList.add("is-landed");
+          updateRerollUI(); renderTitleGrid();
+          setMsg("rerollMsg", "ok", r.data.isNew ? "Title baru didapat! Klik di koleksi untuk memakainya." : "Dapat title yang sudah kamu punya.");
+        }, 320);
       });
     });
   }
